@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Tutor Dashboard</h2>
+  <p>Welcome, {{ user.username }}!</p>
+
+  <ul>
+    <li><a href="{% url 'manage_classes' %}">Manage Classes</a></li>
+    <li><a href="{% url 'student_list' %}">View Students</a></li>
+    <li><a href="{% url 'logout' %}">Logout</a></li>
+  </ul>
+{% endblock %}

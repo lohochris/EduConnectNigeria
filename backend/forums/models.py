@@ -1,9 +1,20 @@
 from django.db import models
-from users.models import User  # Import User model
+from django.contrib.auth import get_user_model  
 
-# Forum Model
+User = get_user_model()  # Get the custom user model dynamically
+
+# Forum Post Model
 class ForumPost(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='forum_posts')
     title = models.CharField(max_length=255)
     content = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)  # Indexed for performance
+    updated_at = models.DateTimeField(auto_now=True)  # Track updates
+
+    class Meta:
+        verbose_name_plural = "Forum Posts"  # Correct plural form
+        ordering = ['-created_at']  # Show newest posts first
+
+    def __str__(self):
+        user_name = self.user.get_full_name() or self.user.email
+        return f"{self.title} by {user_name}"
