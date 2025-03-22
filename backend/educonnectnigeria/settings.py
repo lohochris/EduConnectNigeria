@@ -29,8 +29,11 @@ INSTALLED_APPS = [
 
     # Third-party apps
     'rest_framework',
-    'rest_framework_simplejwt',
+    'rest_framework.authtoken', 
+    'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
+    'debug_toolbar',
+
 
     # My custom apps
     'educonnectnigeria',
@@ -40,6 +43,7 @@ INSTALLED_APPS = [
     'forums',
     'tutoring',
     'progress_tracking',
+    "virtual_classrooms",
 ]
 
 MIDDLEWARE = [
@@ -51,6 +55,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'educonnectnigeria.urls'
@@ -102,6 +107,15 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=7),
 }
 
+# Celery Configuration
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+
+#Zoom Configurations
+ZOOM_API_KEY = "your_zoom_api_key"
+ZOOM_API_SECRET = "your_zoom_api_secret"
+ZOOM_BASE_URL = "https://api.zoom.us/v2"
 
 
 # Database configuration (PostgreSQL)
@@ -173,6 +187,15 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
 ]
 CORS_ALLOW_CREDENTIALS = True
+
+
+load_dotenv()  # Load environment variables
+
+ZOOM_ACCOUNT_ID = os.getenv("ZOOM_ACCOUNT_ID")
+ZOOM_CLIENT_ID = os.getenv("ZOOM_CLIENT_ID")
+ZOOM_CLIENT_SECRET = os.getenv("ZOOM_CLIENT_SECRET")
+ZOOM_SECRET_TOKEN = os.getenv("ZOOM_SECRET_TOKEN")
+ZOOM_VERIFICATION_TOKEN = os.getenv("ZOOM_VERIFICATION_TOKEN")
 
 # Logging Configuration
 LOGGING = {

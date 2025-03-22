@@ -1,15 +1,14 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import logout, get_user_model
-from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+from django.contrib.auth import get_user_model
 from rest_framework.response import Response
 from rest_framework import generics, status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.views import APIView
+from rest_framework_simplejwt.token_blacklist.models import OutstandingToken, BlacklistedToken
 from .serializers import UserSerializer, CustomTokenObtainPairSerializer, ProfileSerializer
 from .models import Profile
 from .utils import role_required
-
-# Password reset imports
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -99,21 +98,30 @@ def password_reset_confirm(request):
     except (User.DoesNotExist, ValueError, TypeError):
         return Response({"error": "Invalid request."}, status=status.HTTP_400_BAD_REQUEST)
 
-# Logout View
+# Logout View (Updated to CBV)
 
-@login_required
-def logout_view(request):
-    logout(request)
-    return Response({"message": "Successfully logged out."}, status=status.HTTP_200_OK)
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        try:
+            tokens = OutstandingToken.objects.filter(user=request.user)
+            for token in tokens:
+                BlacklistedToken.objects.get_or_create(token=token)
+            return Response({"message": "Logged out successfully"}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 # Dashboard Views
 
-@login_required
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
 @role_required(['admin'])
 def admin_dashboard(request):
-    return render(request, 'users/admin_dashboard.html')
+    return Response({"message": "Welcome to the admin dashboard."}, status=status.HTTP_200_OK)
 
-@login_required
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
 @role_required(['tutor'])
 def tutor_dashboard(request):
-    return render(request, 'users/tutor_dashboard.html')
+    return Response({"message": "Welcome to the tutor dashboard."}, status=status.HTTP_200_OK)
