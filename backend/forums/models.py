@@ -1,11 +1,13 @@
 from django.db import models
 from django.contrib.auth import get_user_model  
+from django.conf import settings
 
 User = get_user_model()  # Get the custom user model dynamically
 
 # Forum Post Model
 class ForumPost(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='forum_posts')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)  # Indexed for performance

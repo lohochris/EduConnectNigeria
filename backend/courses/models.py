@@ -1,8 +1,9 @@
 from django.db import models
 from django.contrib.auth import get_user_model  # Dynamically get the user model
+from django.conf import settings
 
 User = get_user_model()  # Get custom user model dynamically
-
+user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 # Course Model
 class Course(models.Model):
     title = models.CharField(max_length=255, unique=True)  # Ensure unique course titles
@@ -21,18 +22,27 @@ class Course(models.Model):
     def __str__(self):
         instructor_name = self.instructor.get_full_name() or self.instructor.email
         return f"{self.title} (Instructor: {instructor_name})"
-   
-    #Course Enrollment System
+
+# Course Enrollment Model
 class Enrollment(models.Model):
-    student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='enrollments')
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='enrollments')
+    student = models.ForeignKey(
+        User, 
+        on_delete=models.CASCADE, 
+        related_name='enrollments'
+    )
+    course = models.ForeignKey(
+        Course, 
+        on_delete=models.CASCADE, 
+        related_name='enrollments'
+    )
     enrolled_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         unique_together = ('student', 'course')  # Ensure a student can't enroll in the same course twice
+        ordering = ['-enrolled_at']  # Show latest enrollments first
 
     def __str__(self):
-        return f"{self.student.username} enrolled in {self.course.title}"    
+        return f"{self.student.username} enrolled in {self.course.title}"
 
 # Learning Material Model
 class LearningMaterial(models.Model):

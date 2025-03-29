@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth import get_user_model  
+from django.contrib.auth import get_user_model
 
 User = get_user_model()  # Dynamically fetch the custom User model
 
@@ -15,6 +15,7 @@ class Progress(models.Model):
     last_accessed = models.DateTimeField(auto_now=True)
 
     class Meta:
+        verbose_name = "Progress Record"
         verbose_name_plural = "Progress Records"
         unique_together = ('student', 'course')  # Ensures each student has one progress per course
         ordering = ['-last_accessed']
@@ -22,7 +23,11 @@ class Progress(models.Model):
             models.CheckConstraint(
                 check=models.Q(completed_lessons__lte=models.F('total_lessons')),
                 name="completed_lessons_lte_total_lessons",
-            )
+            ),
+            models.CheckConstraint(
+                check=models.Q(total_lessons__gte=1),  # Ensures total_lessons is at least 1
+                name="total_lessons_gte_1",
+            ),
         ]
 
     def __str__(self):
@@ -30,7 +35,7 @@ class Progress(models.Model):
 
     def get_progress(self):
         """Calculate progress percentage."""
-        if self.total_lessons == 0:
+        if self.total_lessons <= 0:  # Prevent division by zero
             return 0
         progress = (self.completed_lessons / self.total_lessons) * 100
         return min(round(progress, 2), 100)  # Ensure it never exceeds 100%
