@@ -1,10 +1,6 @@
-<<<<<<< HEAD
-# EduConnectNigeria
-EduConnect Nigeria is an innovative digital learning platform designed to bridge the educational gap in rural Nigeria. It provides offline access to digital resources, interactive lessons, virtual classrooms, and online tutoring, ensuring quality education for all, regardless of internet availability.
-=======
 # EduConnectNigeria
 
-EduConnectNigeria is a comprehensive e-learning platform designed to provide students and educators with an interactive and engaging learning experience. The platform supports course management, learning materials, quizzes, forums, tutoring sessions, and progress tracking.
+EduConnect Nigeria is an innovative digital learning platform designed to bridge the educational gap in rural Nigeria. It provides offline access to digital resources, interactive lessons, virtual classrooms, and online tutoring, ensuring quality education for all, regardless of internet availability.
 
 ## Features
 
@@ -15,10 +11,10 @@ EduConnectNigeria is a comprehensive e-learning platform designed to provide stu
 - **Forums**: Discussion boards for collaborative learning.
 - **Tutoring Sessions**: One-on-one tutoring with scheduled sessions.
 - **Progress Tracking**: Monitor student progress in courses.
+- **AI-Powered Solver**: Instantly solve academic questions with step-by-step explanations using AI.
 
 ## Project Structure
 
-```
 educonnectnigeria/
 │── manage.py
 │── db.sqlite3
@@ -30,13 +26,7 @@ educonnectnigeria/
 │   ├── wsgi.py
 │   ├── asgi.py
 │
-├── users/  # User authentication & management
-│   ├── models.py
-│   ├── views.py
-│   ├── urls.py
-│   ├── admin.py
-│
-├── courses/  # Course management
+├── ai_solver/  # AI-powered question solver
 │   ├── models.py
 │   ├── views.py
 │   ├── urls.py
@@ -48,13 +38,13 @@ educonnectnigeria/
 │   ├── urls.py
 │   ├── admin.py
 │
-├── forums/  # Discussion forums
+├── courses/  # Course management
 │   ├── models.py
 │   ├── views.py
 │   ├── urls.py
 │   ├── admin.py
 │
-├── tutoring/  # Tutoring sessions
+├── forums/  # Discussion forums
 │   ├── models.py
 │   ├── views.py
 │   ├── urls.py
@@ -65,7 +55,20 @@ educonnectnigeria/
 │   ├── views.py
 │   ├── urls.py
 │   ├── admin.py
-```
+│
+├── tutoring/  # Tutoring sessions
+│   ├── models.py
+│   ├── views.py
+│   ├── urls.py
+│   ├── admin.py
+├── users/  # User authentication & management
+│   ├── models.py
+│   ├── views.py
+│   ├── urls.py
+│   ├── admin.py
+
+
+
 
 ## Installation
 
@@ -95,29 +98,30 @@ python manage.py createsuperuser
 
 # Run the development server
 python manage.py runserver
-```
 
-## Usage
 
-1. Navigate to `http://127.0.0.1:8000/` in your browser.
-2. Log in with your superuser credentials.
-3. Start adding courses, materials, quizzes, and manage tutoring sessions!
+Usage
+Navigate to http://127.0.0.1:8000/ in your browser.
 
-## Contributing
+Log in with your superuser credentials.
 
+Start adding courses, materials, quizzes, and explore AI-powered solving and tutoring sessions!
+
+Contributing
 Contributions are welcome! To contribute:
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature-branch`).
-3. Commit your changes (`git commit -m 'Add feature'`).
-4. Push to the branch (`git push origin feature-branch`).
-5. Open a Pull Request.
 
-## License
+Fork the repository.
 
+Create a new branch (git checkout -b feature-branch).
+
+Commit your changes (git commit -m 'Add feature').
+
+Push to the branch (git push origin feature-branch).
+
+Open a Pull Request.
+
+License
 This project is licensed under the MIT License.
 
-## Contact
-
+Contact
 For inquiries, contact Loho Christopher at lohochris@gmail.com.
-
->>>>>>> eaec9d5 (Initial commit for EduConnect Nigeria setting up Django project, and designing the database)
