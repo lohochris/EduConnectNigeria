@@ -15,10 +15,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "your-default-secret-key")
 DEBUG = os.getenv("DEBUG", "False") == "True"
 ALLOWED_HOSTS = ['*', '127.0.0.1', 'localhost', '10.0']
+
 SECURE_SSL_REDIRECT = not DEBUG
-SESSION_COOKIE_SECURE = not DEBUG  # Ensures HTTPS-only cookies in production
-CSRF_COOKIE_SECURE = not DEBUG  # Ensures HTTPS-only CSRF cookies in production
-SECURE_HSTS_SECONDS = 31536000 if not DEBUG else 0  # Enforce HSTS in production
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
+SECURE_HSTS_SECONDS = 31536000 if not DEBUG else 0
 SECURE_HSTS_INCLUDE_SUBDOMAINS = not DEBUG
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https') if not DEBUG else None
 
@@ -30,6 +31,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Required for dj-rest-auth
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'dj_rest_auth',
+    'dj_rest_auth.registration',
 
     # Third-party apps
     'rest_framework',
@@ -50,6 +59,8 @@ INSTALLED_APPS = [
     'ai_solver',
 ]
 
+SITE_ID = 1
+
 # Middleware
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -61,6 +72,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = 'educonnectnigeria.urls'
@@ -95,7 +107,9 @@ DATABASES = {
         'PORT': os.getenv("DB_PORT", "5432"),
     }
 }
-AUTH_USER_MODEL = "users.CustomUser"  
+
+# Ensure Django knows we are using CustomUser
+AUTH_USER_MODEL = 'users.CustomUser'
 
 # Verify database connection
 try:
@@ -117,7 +131,7 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.AllowAny',  # Allow public access by default
+        'rest_framework.permissions.AllowAny',
     ),
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
@@ -156,7 +170,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
 ]
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_ALL_ORIGINS = DEBUG  # Allow all origins only in development
+CORS_ALLOW_ALL_ORIGINS = DEBUG
 
 # Celery Configuration
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
@@ -168,7 +182,35 @@ ZOOM_API_KEY = os.getenv("ZOOM_API_KEY")
 ZOOM_API_SECRET = os.getenv("ZOOM_API_SECRET")
 ZOOM_BASE_URL = "https://api.zoom.us/v2"
 
-# Logging
+# Email settings
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+# Authentication settings (Explicitly use email instead of username)
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None  # Disable username
+ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_SIGNUP_FIELDS = ['email', 'password1', 'password2']
+ACCOUNT_LOGIN_METHODS = ['email']  # New setting instead of ACCOUNT_AUTHENTICATION_METHOD
+ACCOUNT_ADAPTER = "allauth.account.adapter.DefaultAccountAdapter"
+
+# Custom serializer for user registration
+REST_AUTH_REGISTER_SERIALIZERS = {
+    "REGISTER_SERIALIZER": "users.serializers.CustomRegisterSerializer"
+}
+
+# Custom serializer for user registration
+REST_AUTH_REGISTER_SERIALIZERS = {
+    "REGISTER_SERIALIZER": "users.serializers.CustomRegisterSerializer"
+}
+
+# Logging configuration
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,

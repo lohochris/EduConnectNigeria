@@ -10,7 +10,7 @@ class UserQuery(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Query by {self.user.username if self.user else 'Anonymous'} on {self.created_at}"
+        return f"Query by {self.user.email if self.user else 'Anonymous'} on {self.created_at}"
 
 class AISolution(models.Model):
     """Stores AI-generated solutions to user queries."""

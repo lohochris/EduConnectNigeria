@@ -67,7 +67,7 @@ class RandomizedQuizSerializer(serializers.ModelSerializer):
 
 # Serializer for automated scoring
 class QuizScoreSerializer(serializers.Serializer):
-    user = serializers.CharField(source="user.username", read_only=True)
+    user = serializers.CharField(source="user.email", read_only=True)
     quiz = serializers.CharField(source="quiz.title", read_only=True)
     score = serializers.FloatField()
     total_questions = serializers.IntegerField()

@@ -1,9 +1,8 @@
 from django.db import models
-from django.contrib.auth import get_user_model  # Dynamically get the user model
-from django.conf import settings
+from django.contrib.auth import get_user_model
 
 User = get_user_model()  # Get custom user model dynamically
-user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
 # Course Model
 class Course(models.Model):
     title = models.CharField(max_length=255, unique=True)  # Ensure unique course titles
@@ -20,7 +19,10 @@ class Course(models.Model):
         verbose_name_plural = "Courses"
 
     def __str__(self):
-        instructor_name = self.instructor.get_full_name() or self.instructor.email
+        """Return course title and instructor name, fallback to email if necessary."""
+        instructor_name = getattr(self.instructor, "get_full_name", lambda: None)()
+        if not instructor_name or instructor_name.strip() == "":
+            instructor_name = getattr(self.instructor, "email", "Unknown Instructor")  # Fallback to email
         return f"{self.title} (Instructor: {instructor_name})"
 
 # Course Enrollment Model
@@ -42,7 +44,7 @@ class Enrollment(models.Model):
         ordering = ['-enrolled_at']  # Show latest enrollments first
 
     def __str__(self):
-        return f"{self.student.username} enrolled in {self.course.title}"
+        return f"{self.student.email} enrolled in {self.course.title}"
 
 # Learning Material Model
 class LearningMaterial(models.Model):

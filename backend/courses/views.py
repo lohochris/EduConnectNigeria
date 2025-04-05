@@ -15,7 +15,7 @@ class IsInstructor(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         return obj.instructor == request.user
 
-# ✅ Course ViewSet
+# Course ViewSet
 class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
@@ -24,7 +24,7 @@ class CourseViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(instructor=self.request.user)  # Assign course to instructor
 
-# ✅ LearningMaterial ViewSet
+# LearningMaterial ViewSet
 class LearningMaterialViewSet(viewsets.ModelViewSet):
     serializer_class = LearningMaterialSerializer
     permission_classes = [IsAuthenticated, IsInstructor]
@@ -39,7 +39,7 @@ class LearningMaterialViewSet(viewsets.ModelViewSet):
             raise PermissionDenied("You can only add materials to your own courses.")
         serializer.save(course=course)
 
-# ✅ Enrollment ViewSet
+#  Enrollment ViewSet
 class EnrollmentViewSet(viewsets.ModelViewSet):
     queryset = Enrollment.objects.all()
     serializer_class = EnrollmentSerializer
@@ -54,7 +54,7 @@ class EnrollmentViewSet(viewsets.ModelViewSet):
 
         serializer.save(student=student)
 
-# ✅ Student & Instructor Course ViewSets
+# Student & Instructor Course ViewSets
 class StudentEnrolledCoursesViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = CourseSerializer
     permission_classes = [IsAuthenticated]

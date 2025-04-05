@@ -2,7 +2,7 @@
 
 {% block content %}
   <h2>Admin Dashboard</h2>
-  <p>Welcome, {{ user.username }}!</p>
+  <p>Welcome, {{ user.email }}!</p>
 
   <ul>
     <li><a href="{% url 'user_list' %}">Manage Users</a></li>

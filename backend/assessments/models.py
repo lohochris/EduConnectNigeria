@@ -72,7 +72,9 @@ class UserQuizSession(models.Model):
         self.save()
 
     def __str__(self):
-        return f"{self.user.username} - {self.quiz.title} (Started: {self.started_at})"
+        return f"{self.user.email} - {self.quiz.title} (Started: {self.started_at})"
+        return f"{self.user.email} - {self.question.text[:30]}..."
+
 
 
 # User Response Model

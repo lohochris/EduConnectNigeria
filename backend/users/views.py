@@ -34,11 +34,20 @@ class RegisterUserView(generics.CreateAPIView):
         if not email or not password:
             return Response({"error": "Email and password are required."}, status=status.HTTP_400_BAD_REQUEST)
 
+        if User.objects.filter(email=email).exists():
+            return Response({"error": "Email already exists."}, status=status.HTTP_400_BAD_REQUEST)
+
         try:
             serializer = self.get_serializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             user = serializer.save()
-            return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
+            return Response(
+                {
+                    "message": "User registered successfully!",
+                    "user": UserSerializer(user).data,
+                },
+                status=status.HTTP_201_CREATED,
+            )
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 

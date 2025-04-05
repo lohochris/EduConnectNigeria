@@ -32,7 +32,8 @@ class UserQuizSessionAdmin(admin.ModelAdmin):
 @admin.register(UserResponse)
 class UserResponseAdmin(admin.ModelAdmin):
     list_display = ('user', 'get_quiz', 'question', 'selected_option', 'submitted_at')
-    search_fields = ('user__username', 'question__text')
+    search_fields = ('user__email', 'quiz__title')
+    search_fields = ('user__email', 'question__text')
     list_filter = ('question__quiz', 'submitted_at')
 
     def get_quiz(self, obj):

@@ -122,7 +122,7 @@ class QuizScoreView(generics.RetrieveAPIView):
         score = (correct_answers / total_questions) * 100 if total_questions > 0 else 0
 
         return Response({
-            "user": user.username,
+            "user": user.email,
             "quiz": quiz.title,
             "score": score,
             "total_questions": total_questions,

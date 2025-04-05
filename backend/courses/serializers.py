@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import Course, LearningMaterial, Enrollment
 
 class CourseSerializer(serializers.ModelSerializer):
-    instructor = serializers.ReadOnlyField(source='instructor.username')
+    instructor = serializers.ReadOnlyField(source='instructor.email')
     created_at = serializers.DateTimeField(format="%Y-%m-%d", read_only=True)
     updated_at = serializers.DateTimeField(format="%Y-%m-%d", read_only=True)
     
@@ -27,7 +27,7 @@ class LearningMaterialSerializer(serializers.ModelSerializer):
         fields = ['id', 'course', 'title', 'file', 'content_type', 'content_type_display', 'created_at', 'updated_at']
 
 class EnrollmentSerializer(serializers.ModelSerializer):
-    student = serializers.ReadOnlyField(source='student.username')
+    student = serializers.ReadOnlyField(source='student.email')
     course = serializers.PrimaryKeyRelatedField(queryset=Course.objects.all())
     enrolled_at = serializers.DateTimeField(format="%Y-%m-%d", read_only=True)
     
