@@ -81,7 +81,8 @@ educonnectnigeria/
 ```sh
 # Clone the repository
 git clone https://github.com/lohochris/EduConnectNigeria.git
-cd EduConnectNigeria
+cd educonnectnigeria
+cd backend
 
 # Create a virtual environment (optional)
 python -m venv venv
